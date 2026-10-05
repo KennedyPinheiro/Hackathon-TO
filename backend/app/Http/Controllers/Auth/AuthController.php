@@ -3,47 +3,55 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function __construct(
+        private readonly AuthService $service
+    ) {}
+
+    public function login(LoginRequest $request)
     {
-        $dados = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-
-        $user = User::where('email', $dados['email'])->first();
-
-        if (!$user || !Hash::check($dados['password'], $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Credenciais inválidas.',
-            ], 401);
-        }
-
-        $token = $user->createToken('api-token')->plainTextToken;
+        $resultado = $this->service->login(
+            $request->validated()
+        );
 
         return response()->json([
             'success' => true,
             'message' => 'Login realizado com sucesso.',
             'data' => [
-                'user' => $user,
-                'token' => $token,
+                'user' => new UserResource($resultado['user']),
+                'token' => $resultado['token'],
             ],
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()?->delete();
+        $this->service->logout(
+            $request->user()
+        );
 
         return response()->json([
             'success' => true,
             'message' => 'Logout realizado com sucesso.',
+        ]);
+    }
+
+    public function me(Request $request)
+    {
+        $user = $request->user()->load(
+            'roles',
+            'permissions'
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => new UserResource($user),
         ]);
     }
 }
