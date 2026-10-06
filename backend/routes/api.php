@@ -13,6 +13,7 @@ Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/senha', [AuthController::class, 'alterarSenha',]);
+        Route::put('/perfil', [AuthController::class, 'atualizarPerfil'])->middleware('permission:perfil.proprio.editar');
     });
 });
 
