@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Services\ResponseService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -24,15 +25,14 @@ class AuthController extends Controller
         );
 
 
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Login realizado com sucesso.',
-            'data' => [
+        return ResponseService::success(
+            data: [
                 'user' => new UserResource($resultado['user']),
                 'token' => $resultado['token'],
             ],
-        ]);
+            message: 'Login realizado com sucesso.',
+            status: 201
+        );
     }
 
     public function logout(Request $request)
@@ -41,10 +41,11 @@ class AuthController extends Controller
             $request->user()
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Logout realizado com sucesso.',
-        ]);
+        return ResponseService::success(
+            data: null,
+            message: 'Logout realizado com sucesso.',
+            status: 200
+        );
     }
 
     public function me(Request $request)
@@ -54,10 +55,12 @@ class AuthController extends Controller
             'permissions'
         );
 
-        return response()->json([
-            'success' => true,
-            'data' => new UserResource($user),
-        ]);
+        return ResponseService::success(
+
+            data: new UserResource($user),
+            message: null,
+            status: 200
+        );
     }
     public function alterarSenha(ChangePasswordRequest $request)
     {
@@ -66,9 +69,10 @@ class AuthController extends Controller
             $request->validated('password')
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Senha alterada com sucesso.',
-        ]);
+        return ResponseService::success(
+            data: null,
+            message: 'Senha do usuário alterada com sucesso.',
+            status: 200
+        );
     }
 }
