@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 
 class UserService
 {
@@ -84,5 +85,11 @@ class UserService
     public function excluir(User $user): void
     {
         $user->delete();
+    }
+    public function alterarSenha(User $user, string $password): void
+    {
+        $user->update([
+            'password' => Hash::make($password),
+        ]);
     }
 }

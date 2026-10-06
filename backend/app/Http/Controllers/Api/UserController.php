@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\AdminChangePasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
@@ -72,6 +73,21 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuário excluído com sucesso.',
+        ]);
+    }
+
+    public function alterarSenha(
+        AdminChangePasswordRequest $request,
+        User $user
+    ): JsonResponse {
+        $this->service->alterarSenha(
+            $user,
+            $request->validated('password')
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Senha do usuário alterada com sucesso.',
         ]);
     }
 }

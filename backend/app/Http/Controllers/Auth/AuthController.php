@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
     public function __construct(
-        private readonly AuthService $service
+        private readonly AuthService $service,
+        private readonly UserService $userService
     ) {}
 
     public function login(LoginRequest $request)
@@ -52,6 +55,18 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => new UserResource($user),
+        ]);
+    }
+    public function alterarSenha(ChangePasswordRequest $request)
+    {
+        $this->userService->alterarSenha(
+            $request->user(),
+            $request->validated('password')
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Senha alterada com sucesso.',
         ]);
     }
 }
