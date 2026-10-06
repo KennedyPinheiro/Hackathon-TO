@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Services\ResponseService;
 
 class ApiExceptionHandler
 {
@@ -35,44 +36,45 @@ class ApiExceptionHandler
     private static function validation(
         ValidationException $exception
     ) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Os dados informados são inválidos.',
-            'errors' => $exception->errors(),
-        ], 422);
+        return ResponseService::error(
+            message: 'Os dados informados são inválidos.',
+            status: 422,
+            errors: $exception->errors()
+        );
     }
 
     private static function authentication(
         AuthenticationException $exception
     ) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Não autenticado.',
-        ], 401);
+        return ResponseService::error(
+            message: 'Não autenticado.',
+            status: 401
+        );
     }
 
     private static function authorization(
         AuthorizationException $exception
     ) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Você não possui permissão para realizar esta ação.',
-        ], 403);
+
+        return ResponseService::error(
+            message: 'Você não possui permissão para realizar esta ação.',
+            status: 403
+        );
     }
 
     private static function notFound()
     {
-        return response()->json([
-            'success' => false,
-            'message' => 'Registro não encontrado.',
-        ], 404);
+        return ResponseService::error(
+            message: 'Registro não encontrado.',
+            status: 404
+        );
     }
 
     private static function endpointNotFound()
     {
-        return response()->json([
-            'success' => false,
-            'message' => 'Endpoint não encontrado.',
-        ], 404);
+        return ResponseService::error(
+            message: 'Endpoint não encontrado.',
+            status: 404
+        );
     }
 }
