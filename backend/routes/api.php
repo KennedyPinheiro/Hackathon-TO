@@ -20,5 +20,5 @@ Route::middleware('auth:sanctum')->prefix('usuarios')->group(function () {
     Route::post('/', [UserController::class, 'store',])->middleware('permission:usuarios.criar');
     Route::get('/{user}', [UserController::class, 'show',])->middleware('permission:usuarios.visualizar');
     Route::put('/{user}', [UserController::class, 'update',])->middleware('permission:usuarios.editar');
-    Route::delete('/{user}', [UserController::class, 'destroy',])->middleware('permission:usuarios.excluir');
+    Route::delete('/{user}', [UserController::class, 'destroy',])->middleware('permission:usuarios.excluir')->middleware('prevent.self.deletion');
 });
