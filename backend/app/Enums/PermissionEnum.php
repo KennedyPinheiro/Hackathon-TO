@@ -14,6 +14,10 @@ enum PermissionEnum: string
     case PERFIS_EDITAR = 'perfis.editar';
     case PERFIS_EXCLUIR = 'perfis.excluir';
 
+    case PERFIL_PROPRIO_VISUALIZAR = 'perfil.proprio.visualizar';
+    case PERFIL_PROPRIO_EDITAR = 'perfil.proprio.editar';
+    case PERFIL_PROPRIO_EXCLUIR = 'perfil.proprio.excluir';
+
     case PERMISSOES_VISUALIZAR = 'permissoes.visualizar';
     case PERMISSOES_CRIAR = 'permissoes.criar';
     case PERMISSOES_EDITAR = 'permissoes.editar';
