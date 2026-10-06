@@ -5,10 +5,13 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\Auth\ChangePasswordRequest;
 
 class UserService
 {
+    public function __construct(
+        private readonly AuditService $auditService
+    ) {}
+
     public function listar(array $filtros = [])
     {
         return User::query()
@@ -25,7 +28,7 @@ class UserService
             )
             ->latest()
             ->paginate(
-                $filtros['per_page'] ?? 15
+                $filtros['per_page'] ?? 20
             );
     }
 
@@ -54,10 +57,25 @@ class UserService
                 $user->assignRole($role);
             }
 
-            return $user->load([
+            $user->load([
                 'roles',
                 'permissions',
             ]);
+
+            $this->auditService->registrar(
+                action: 'created',
+                model: $user,
+                newValues: [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->roles
+                        ->pluck('name')
+                        ->values()
+                        ->all(),
+                ],
+            );
+
+            return $user;
         });
     }
 
@@ -66,6 +84,15 @@ class UserService
         array $dados
     ): User {
         return DB::transaction(function () use ($user, $dados) {
+            $oldValues = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles
+                    ->pluck('name')
+                    ->values()
+                    ->all(),
+            ];
+
             $role = $dados['role'] ?? null;
 
             unset($dados['role']);
@@ -84,21 +111,63 @@ class UserService
                 $user->syncRoles([$role]);
             }
 
-            return $user->load([
-                'roles',
-                'permissions',
-            ]);
+            $user->load(['roles', 'permissions',]);
+
+            $newValues = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles
+                    ->pluck('name')
+                    ->values()
+                    ->all(),
+            ];
+
+            $this->auditService->registrar(
+                action: 'updated',
+                model: $user,
+                oldValues: $oldValues,
+                newValues: $newValues,
+            );
+
+            return $user;
         });
     }
 
     public function excluir(User $user): void
     {
-        $user->delete();
+        DB::transaction(function () use ($user) {
+            $oldValues = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles
+                    ->pluck('name')
+                    ->values()
+                    ->all(),
+            ];
+
+            $this->auditService->registrar(
+                action: 'deleted',
+                model: $user,
+                oldValues: $oldValues,
+            );
+
+            $user->delete();
+        });
     }
-    public function alterarSenha(User $user, string $password): void
-    {
-        $user->update([
-            'password' => Hash::make($password),
-        ]);
+
+    public function alterarSenha(
+        User $user,
+        string $password
+    ): void {
+        DB::transaction(function () use ($user, $password) {
+            $user->update([
+                'password' => Hash::make($password),
+            ]);
+
+            $this->auditService->registrar(
+                action: 'password_changed',
+                model: $user,
+            );
+        });
     }
 }

@@ -16,7 +16,8 @@ use Illuminate\Http\JsonResponse;
 class UserController extends Controller
 {
     public function __construct(
-        private readonly UserService $service
+        private readonly UserService $service,
+
     ) {}
 
     public function index(IndexUserRequest $request): JsonResponse
@@ -48,7 +49,7 @@ class UserController extends Controller
 
         return ResponseService::success(
             data: new UserResource($this->service->buscar($user)),
-            message: '',
+            message: null,
             status: 200
         );
     }
