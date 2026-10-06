@@ -23,6 +23,8 @@ class AuthController extends Controller
             $request->validated()
         );
 
+
+        
         return response()->json([
             'success' => true,
             'message' => 'Login realizado com sucesso.',
