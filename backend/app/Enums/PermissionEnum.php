@@ -9,13 +9,17 @@ enum PermissionEnum: string
     case USUARIOS_EDITAR = 'usuarios.editar';
     case USUARIOS_EXCLUIR = 'usuarios.excluir';
 
-    case EVENTOS_VISUALIZAR = 'eventos.visualizar';
-    case EVENTOS_CRIAR = 'eventos.criar';
-    case EVENTOS_EDITAR = 'eventos.editar';
-    case EVENTOS_EXCLUIR = 'eventos.excluir';
+    case PERFIS_VISUALIZAR = 'perfis.visualizar';
+    case PERFIS_CRIAR = 'perfis.criar';
+    case PERFIS_EDITAR = 'perfis.editar';
+    case PERFIS_EXCLUIR = 'perfis.excluir';
 
-    case INSCRICOES_VISUALIZAR = 'inscricoes.visualizar';
-    case INSCRICOES_CRIAR = 'inscricoes.criar';
-    case INSCRICOES_EDITAR = 'inscricoes.editar';
-    case INSCRICOES_EXCLUIR = 'inscricoes.excluir';
+    case PERMISSOES_VISUALIZAR = 'permissoes.visualizar';
+    case PERMISSOES_CRIAR = 'permissoes.criar';
+    case PERMISSOES_EDITAR = 'permissoes.editar';
+    case PERMISSOES_EXCLUIR = 'permissoes.excluir';
+
+
+    case CONFIGURACOES_VISUALIZAR = 'configuracoes.visualizar';
+    case CONFIGURACOES_EDITAR = 'configuracoes.editar';
 }

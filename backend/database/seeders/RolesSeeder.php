@@ -12,6 +12,7 @@ class RolesSeeder extends Seeder
 {
     public function run(): void
     {
+
         $permissions = [];
 
         foreach (PermissionEnum::cases() as $permission) {
@@ -26,41 +27,38 @@ class RolesSeeder extends Seeder
             'guard_name' => 'api',
         ]);
 
-        $organizador = Role::firstOrCreate([
-            'name' => RoleEnum::ORGANIZADOR->value,
+        $gestor = Role::firstOrCreate([
+            'name' => RoleEnum::GESTOR->value,
             'guard_name' => 'api',
         ]);
 
-        $participante = Role::firstOrCreate([
-            'name' => RoleEnum::PARTICIPANTE->value,
+        $usuario = Role::firstOrCreate([
+            'name' => RoleEnum::USUARIO->value,
             'guard_name' => 'api',
         ]);
 
-        /*
-         * ADMIN
-         * Recebe todas as permissões.
-         */
+
         $admin->syncPermissions($permissions);
 
-        /*
-         * ORGANIZADOR
-         */
-        $organizador->syncPermissions([
-            PermissionEnum::EVENTOS_VISUALIZAR->value,
-            PermissionEnum::EVENTOS_CRIAR->value,
-            PermissionEnum::EVENTOS_EDITAR->value,
 
-            PermissionEnum::INSCRICOES_VISUALIZAR->value,
+        $gestor->syncPermissions([
+            PermissionEnum::USUARIOS_VISUALIZAR->value,
+            PermissionEnum::USUARIOS_CRIAR->value,
+            PermissionEnum::USUARIOS_EDITAR->value,
+
+            PermissionEnum::PERFIS_VISUALIZAR->value,
+            PermissionEnum::PERFIS_CRIAR->value,
+            PermissionEnum::PERFIS_EDITAR->value,
+
+            PermissionEnum::PERMISSOES_VISUALIZAR->value,
+
+            PermissionEnum::CONFIGURACOES_VISUALIZAR->value,
+            PermissionEnum::CONFIGURACOES_EDITAR->value,
         ]);
 
-        /*
-         * PARTICIPANTE
-         */
-        $participante->syncPermissions([
-            PermissionEnum::EVENTOS_VISUALIZAR->value,
 
-            PermissionEnum::INSCRICOES_VISUALIZAR->value,
-            PermissionEnum::INSCRICOES_CRIAR->value,
+        $usuario->syncPermissions([
+            PermissionEnum::USUARIOS_VISUALIZAR->value,
         ]);
     }
 }
