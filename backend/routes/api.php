@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,9 @@ Route::middleware('auth:sanctum')->prefix('usuarios')->group(function () {
     Route::get('/{user}', [UserController::class, 'show',])->middleware('permission:usuarios.visualizar');
     Route::put('/{user}', [UserController::class, 'update',])->middleware('permission:usuarios.editar');
     Route::delete('/{user}', [UserController::class, 'destroy',])->middleware('permission:usuarios.excluir')->middleware('prevent.self.deletion');
+});
+
+Route::middleware('auth:sanctum')->prefix('auditoria')->group(function () {
+    Route::get('/', [AuditController::class, 'index'])->middleware('permission:auditoria.visualizar');
+    Route::get('/{audit}', [AuditController::class, 'show'])->middleware('permission:auditoria.visualizar');
 });

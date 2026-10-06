@@ -22,4 +22,6 @@ enum PermissionEnum: string
 
     case CONFIGURACOES_VISUALIZAR = 'configuracoes.visualizar';
     case CONFIGURACOES_EDITAR = 'configuracoes.editar';
+
+    case AUDITORIA_VISUALIZAR = 'auditoria.visualizar';
 }

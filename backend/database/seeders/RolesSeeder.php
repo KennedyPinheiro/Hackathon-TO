@@ -59,6 +59,8 @@ class RolesSeeder extends Seeder
 
         $usuario->syncPermissions([
             PermissionEnum::USUARIOS_VISUALIZAR->value,
+            PermissionEnum::USUARIOS_EDITAR->value,
+            PermissionEnum::USUARIOS_EXCLUIR->value,
         ]);
     }
 }
