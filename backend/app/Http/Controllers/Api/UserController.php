@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AdminChangePasswordRequest;
+use App\Http\Requests\IndexUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\ResponseService;
@@ -18,12 +19,12 @@ class UserController extends Controller
         private readonly UserService $service
     ) {}
 
-    public function index(): JsonResponse
+    public function index(IndexUserRequest $request): JsonResponse
     {
+        $usuarios = $this->service->listar($request->validated());
+
         return ResponseService::success(
-            data: UserResource::collection(
-                $this->service->listar()
-            )
+            data: UserResource::collection($usuarios)
         );
     }
 

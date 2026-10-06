@@ -9,15 +9,24 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 
 class UserService
 {
-    public function listar()
+    public function listar(array $filtros = [])
     {
         return User::query()
-            ->with([
-                'roles',
-                'permissions',
-            ])
+            ->with(['roles', 'permissions'])
+            ->when(
+                $filtros['search'] ?? null,
+                function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+                }
+            )
             ->latest()
-            ->get();
+            ->paginate(
+                $filtros['per_page'] ?? 15
+            );
     }
 
     public function buscar(User $user): User
